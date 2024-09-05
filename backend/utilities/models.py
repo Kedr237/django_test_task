@@ -32,6 +32,7 @@ class Apartment(TimeSampleMixin):
                                  on_delete=models.CASCADE,
                                  verbose_name='Адрес')
     number = models.PositiveIntegerField(verbose_name='Номер квартиры')
+    area = models.FloatField(verbose_name='Площадь квартиры в м2')
 
     class Meta:
         constraints = [
@@ -47,10 +48,10 @@ class Tariff(TimeSampleMixin):
     name = models.CharField(max_length=255,
                             unique=True,
                             verbose_name='Название тарифа')
-    price = models.FloatField(verbose_name='Цена за кубометр')
+    price = models.FloatField(verbose_name='Цена за м3')
 
     def __str__(self):
-        return f'{self.name} : {self.price} за кубометр'
+        return f'{self.name} : {self.price} за м3'
 
 
 class WaterMeter(models.Model):
