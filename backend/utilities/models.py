@@ -48,10 +48,10 @@ class Tariff(TimeSampleMixin):
     name = models.CharField(max_length=255,
                             unique=True,
                             verbose_name='Название тарифа')
-    price = models.FloatField(verbose_name='Цена за м3')
+    price = models.FloatField(verbose_name='Цена за единицу')
 
     def __str__(self):
-        return f'{self.name} : {self.price} за м3'
+        return f'{self.name} : {self.price}'
 
 
 class WaterMeter(models.Model):
