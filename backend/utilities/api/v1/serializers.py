@@ -24,3 +24,25 @@ class WaterMeterSerializer(serializers.ModelSerializer):
     class Meta:
         model = WaterMeter
         fields = '__all__'
+
+
+class BuildingInfoSerializer(serializers.ModelSerializer):
+    adress = serializers.SerializerMethodField(label='Адресс')
+    apartments = serializers.SerializerMethodField(label='Квартиры')
+
+    class Meta:
+        model = Building
+        fields = ['adress', 'apartments']
+
+    def get_adress(self, obj: Building):
+        return f'{obj.city}, {obj.street}, {obj.number}'
+
+    def get_apartments(self, obj: Building):
+        result = []
+        apartments = Apartment.objects.filter(building=obj)
+        for apartment in apartments:
+            result.append({
+                'apartment_number': apartment.number,
+                'apartment_area': apartment.area,
+            })
+        return result

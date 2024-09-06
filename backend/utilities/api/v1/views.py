@@ -1,8 +1,9 @@
 from rest_framework import viewsets
 from utilities.models import Apartment, Building, Tariff, WaterMeter
 
-from .serializers import (ApartmentSerializer, BuildingSerializer,
-                          TariffSerializer, WaterMeterSerializer)
+from .serializers import (ApartmentSerializer, BuildingInfoSerializer,
+                          BuildingSerializer, TariffSerializer,
+                          WaterMeterSerializer)
 
 
 class ApartmentViewSet(viewsets.ModelViewSet):
@@ -23,3 +24,8 @@ class TariffViewSet(viewsets.ModelViewSet):
 class WaterMeterViewSet(viewsets.ModelViewSet):
     queryset = WaterMeter.objects.all()
     serializer_class = WaterMeterSerializer
+
+
+class BuildingInfoListView(viewsets.ReadOnlyModelViewSet):
+    queryset = Building.objects.all()
+    serializer_class = BuildingInfoSerializer
