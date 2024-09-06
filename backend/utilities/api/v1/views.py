@@ -1,7 +1,25 @@
-from django.http import HttpResponse
-from django.views import View
+from rest_framework import viewsets
+from utilities.models import Apartment, Building, Tariff, WaterMeter
+
+from .serializers import (ApartmentSerializer, BuildingSerializer,
+                          TariffSerializer, WaterMeterSerializer)
 
 
-class MyView(View):
-    def get(self, request):
-        return HttpResponse('Hello, world!')
+class ApartmentViewSet(viewsets.ModelViewSet):
+    queryset = Apartment.objects.all()
+    serializer_class = ApartmentSerializer
+
+
+class BuildingViewSet(viewsets.ModelViewSet):
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer
+
+
+class TariffViewSet(viewsets.ModelViewSet):
+    queryset = Tariff.objects.all()
+    serializer_class = TariffSerializer
+
+
+class WaterMeterViewSet(viewsets.ModelViewSet):
+    queryset = WaterMeter.objects.all()
+    serializer_class = WaterMeterSerializer
