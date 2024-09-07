@@ -1,15 +1,31 @@
-from calculator.tasks import add_numbers
-from rest_framework.decorators import api_view
+from calculator.models import ApartmentRent
+from calculator.tasks import calculate_rent
+from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .serializers import ApartmentRentSerializer, CalculateRentSerializer
 
 
-@api_view(['POST'])
-def add_numbers_view(request: Request):
-    num1 = request.data.get('num1')
-    num2 = request.data.get('num2')
-    if (num1 is None) or (num2 is None):
-        return Response({'error': 'Parameters not provided.'}, status=400)
+class CalculateRentView(APIView):
+    def post(self, request: Request):
+        serializer = CalculateRentSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            calculate_rent.delay(
+                building_id=data['building_id'].id,
+                area_tariff_id=data['area_tariff_id'].id,
+                date_from=data['date_from'],
+                date_to=data['date_to'],
+            )
+            return Response({'status': 'Rent calculation started'},
+                            status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
-    task = add_numbers.delay(num1, num2)
-    return Response({'task_id': task.id}, status=202)
+
+class ApartmentRentListView(ListAPIView):
+    queryset = ApartmentRent.objects.all()
+    serializer_class = ApartmentRentSerializer
