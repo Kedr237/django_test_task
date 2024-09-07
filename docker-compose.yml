@@ -7,6 +7,29 @@ services:
       - static:/app/staticfiles
     depends_on:
       - postgres
+      - redis
+    restart: always
+
+  celery:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    entrypoint: celery -A settings worker -l INFO
+    depends_on:
+      - backend
+      - redis
+    restart: always
+
+  flower:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    entrypoint: celery -A settings flower
+    ports:
+      - 5555:5555
+    depends_on:
+      - celery
+      - redis
     restart: always
 
   postgres:
@@ -15,6 +38,10 @@ services:
       - ./postgres/.env
     volumes:
       - pg_data:/var/lib/postgresql/data
+    restart: always
+
+  redis:
+    image: redis:latest
     restart: always
 
   nginx:

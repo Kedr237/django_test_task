@@ -42,6 +42,7 @@ class BuildingInfoSerializer(serializers.ModelSerializer):
         apartments = Apartment.objects.filter(building=obj)
         for apartment in apartments:
             result.append({
+                'id': apartment.id,
                 'apartment_number': apartment.number,
                 'apartment_area': apartment.area,
             })
